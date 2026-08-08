@@ -53,6 +53,18 @@
     </div>
   </section>
 
+  <!-- ====== LATEST FROM SUBSTACK (filled in by /api/substack) ====== -->
+  <section class="band tight" id="latest" hidden>
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">From the newsletter</p>
+        <h2 class="h2">The latest, <em class="s">at more length</em>.</h2>
+      </div>
+      <div class="rooms" id="latest-grid"></div>
+      <p class="aside-line">Longer arguments go out on Substack first, then get folded back into the notes below. <a id="latest-archive" href="https://hackersbio.substack.com" target="_blank" rel="noopener">Read the archive →</a></p>
+    </div>
+  </section>
+
   <section class="band tight">
     <div class="wrap">
       <div class="chips">
@@ -216,6 +228,62 @@
     <a href="about.html">About</a>
   </div>
 </footer>
+
+<script>
+/* Fills the "From the newsletter" section from /api/substack.
+   If the feed is unreachable the section stays hidden. */
+(async function () {
+  var section = document.getElementById("latest");
+  var grid = document.getElementById("latest-grid");
+  if (!section || !grid) return;
+
+  try {
+    var res = await fetch("/api/substack");
+    var data = await res.json();
+    if (!data.items || !data.items.length) return;
+
+    data.items.forEach(function (post) {
+      var card = document.createElement("a");
+      card.className = "room";
+      card.href = post.link;
+      card.target = "_blank";
+      card.rel = "noopener";
+
+      if (post.date) {
+        var when = new Date(post.date);
+        var stamp = document.createElement("span");
+        stamp.className = "room-n";
+        stamp.style.alignSelf = "flex-start";
+        stamp.textContent = isNaN(when) ? post.date : when.toLocaleDateString("en-GB", {
+          day: "numeric", month: "short", year: "numeric"
+        });
+        card.appendChild(stamp);
+      }
+
+      var title = document.createElement("h3");
+      title.textContent = post.title;
+      card.appendChild(title);
+
+      if (post.summary) {
+        var body = document.createElement("p");
+        body.textContent = post.summary;
+        card.appendChild(body);
+      }
+
+      var more = document.createElement("p");
+      more.className = "room-more";
+      more.textContent = "Read on Substack →";
+      card.appendChild(more);
+
+      grid.appendChild(card);
+    });
+
+    section.hidden = false;
+  } catch (err) {
+    /* leave the section hidden */
+  }
+})();
+</script>
 
 </body>
 </html>
