@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>App — hackers.bio</title>
+<meta name="description" content="Work in progress: one place to track all your data, from your watch to your blood work. No scores out of 100, no diagnoses, full export.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,300..400&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap masthead-in">
+    <a class="mark" href="index.html">hackers<i>.</i>bio</a>
+    <nav>
+      <a href="hacks.html">Hacks</a>
+      <a href="community.html">Community</a>
+      <a href="library.html">Library</a>
+      <a class="is-active" href="app.html">App</a>
+      <a href="adventures.html">Adventures</a>
+    </nav>
+    <a class="btn" href="#waitlist">Get early access</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap page-head-in">
+      <div class="rise">
+        <p class="eyebrow"><i class="dot"></i>04 — App · work in progress</p>
+        <h1>All your data, <em class="s">in one place</em>.</h1>
+        <p class="lede">Your watch knows your sleep, another app has your training, a PDF in your email has your blood work. The app pulls it together so you can actually look at it — and so that running a hack from this site means something more than a vague feeling six weeks later.</p>
+        <div class="page-actions">
+          <a class="btn" href="#waitlist">Get early access</a>
+          <a class="btn btn-ghost" href="#status">See what's built</a>
+        </div>
+      </div>
+
+      <aside class="side-note rise d2">
+        <h3>Honest status</h3>
+        <p>It isn't finished, and there's no download link yet. Connections and the timeline work; experiments and labs are being built now. Early access means a rough build and a direct line to complain about it.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">What it does</p>
+        <h2 class="h2">Four jobs, <em class="s">nothing more</em>.</h2>
+        <p class="lede">It's a place to keep and read your own numbers. It won't score you, rank you against strangers, or tell you what's wrong with you.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="panel">
+          <span class="kicker">01 · Connect</span>
+          <h3>Everything in one timeline</h3>
+          <p>Bring in what you already record and stop switching between apps to compare two things.</p>
+          <ul>
+            <li>Garmin, Apple Health, Oura, Whoop<span>Sleep, heart rate, training load.</span></li>
+            <li>Manual log<span>For the things no device measures.</span></li>
+            <li>CSV import<span>Bring years of history with you.</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <span class="kicker">02 · Run</span>
+          <h3>Follow a hack properly</h3>
+          <p>Pick a hack, fix the duration and the one metric you'll watch before you start — the part everybody skips.</p>
+          <ul>
+            <li>Baseline first<span>Two weeks of normal before you change anything.</span></li>
+            <li>One metric<span>Chosen up front, so you can't move the goalposts.</span></li>
+            <li>An end date<span>The app asks you what happened, either way.</span></li>
+          </ul>
+        </div>
+        <div class="panel">
+          <span class="kicker">03 · Keep</span>
+          <h3>Blood work that stays readable</h3>
+          <p>Type a panel in once and see it next to the rest of your history instead of hunting through old PDFs.</p>
+          <ul>
+            <li>Panels over time<span>The same marker, year after year.</span></li>
+            <li>Your own reference notes<span>What your doctor actually said.</span></li>
+            <li>No interpretation<span>We show the numbers; the reading is between you and a clinician.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight" id="status">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">Build status</p>
+        <h2 class="h2">Where it actually is, <em class="s">this week</em>.</h2>
+        <p class="lede">Updated as things ship. If something below has been "building" for two months, ask about it in the Discord — that's usually the fastest way to move it.</p>
+      </div>
+
+      <div class="status">
+        <div>
+          <b class="on">Working</b>
+          <p>Garmin and Apple Health sync<span>Sleep, resting heart rate, HRV and training load, backfilled from your history.</span></p>
+        </div>
+        <div>
+          <b class="on">Working</b>
+          <p>One timeline for everything<span>All sources on the same dates, so you can look at two things side by side.</span></p>
+        </div>
+        <div>
+          <b class="now">Building</b>
+          <p>Experiments<span>Baseline, protocol, end date, and a prompt to write up the result — including a null one.</span></p>
+        </div>
+        <div>
+          <b class="now">Building</b>
+          <p>Blood work<span>Type a panel once and keep it in order.</span></p>
+        </div>
+        <div>
+          <b>Next</b>
+          <p>Oura and Whoop<span>Waiting on API access. Manual import works in the meantime.</span></p>
+        </div>
+        <div>
+          <b>Next</b>
+          <p>Share a run with the group<span>Push a finished experiment into the community thread for its hack.</span></p>
+        </div>
+        <div>
+          <b>Not planned</b>
+          <p>A readiness score<span>A single number that hides how it was calculated is the opposite of what this is for.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band tight">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">Your data</p>
+        <h2 class="h2">Three promises we'd rather <em class="s">be held to</em>.</h2>
+      </div>
+      <div class="stance">
+        <div>
+          <b>01</b>
+          <h3>Export whenever</h3>
+          <p>Everything you put in comes out as plain files, without asking anyone. Leaving should be easy or the rest doesn't count.</p>
+        </div>
+        <div>
+          <b>02</b>
+          <h3>Never sold</h3>
+          <p>Health data isn't an advertising asset. It doesn't get sold, shared with data brokers, or used to train anything.</p>
+        </div>
+        <div>
+          <b>03</b>
+          <h3>No diagnosis</h3>
+          <p>The app shows you your numbers. It won't tell you what they mean about your health, because that's a doctor's job and not a screen's.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="close" id="waitlist">
+    <div class="wrap">
+      <div class="close-inner">
+        <div class="close-grid">
+          <h2>Early access is <em class="s">rough on purpose</em>.</h2>
+          <div>
+            <p>Small groups, one at a time, so the feedback is real. Ask in the Discord and you'll be in the next one.</p>
+            <a class="btn" href="community.html">Ask for an invite →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <a class="mark" href="index.html">hackers<i>.</i>bio</a>
+    <p>Notes get updated when the evidence does. Nothing here is medical advice.</p>
+    <span class="spacer"></span>
+    <a href="hacks.html">Hacks</a>
+    <a href="community.html">Community</a>
+    <a href="library.html">Library</a>
+    <a href="app.html">App</a>
+    <a href="adventures.html">Adventures</a>
+    <a href="about.html">About</a>
+  </div>
+</footer>
+
+</body>
+</html>
