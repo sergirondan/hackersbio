@@ -82,20 +82,20 @@
 
   <section class="band tight">
     <div class="wrap">
-      <div class="chips">
-        <a class="chip is-on" href="hacks.html">All 412</a>
-        <a class="chip" href="hacks.html">Sleep</a>
-        <a class="chip" href="hacks.html">Training</a>
-        <a class="chip" href="hacks.html">Food</a>
-        <a class="chip" href="hacks.html">Supplements</a>
-        <a class="chip" href="hacks.html">Skin</a>
-        <a class="chip" href="hacks.html">Mind</a>
-        <a class="chip" href="hacks.html">Recently rewritten</a>
+      <div class="chips" id="hack-filters">
+        <a class="chip is-on" href="#hack-list" data-filter="all">All 412</a>
+        <a class="chip" href="#hack-list" data-filter="sleep">Sleep</a>
+        <a class="chip" href="#hack-list" data-filter="training">Training</a>
+        <a class="chip" href="#hack-list" data-filter="food">Food</a>
+        <a class="chip" href="#hack-list" data-filter="supplements">Supplements</a>
+        <a class="chip" href="#hack-list" data-filter="skin">Skin</a>
+        <a class="chip" href="#hack-list" data-filter="mind">Mind</a>
+        <a class="chip" href="#hack-list" data-filter="rewritten">Recently rewritten</a>
       </div>
 
-      <div class="list">
+      <div class="list" id="hack-list">
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="supplements training rewritten">
           <div>
             <h3>Creatine monohydrate</h3>
             <p>The most studied supplement in sport, and one of the cheapest. Strength and lean mass gains are consistent across decades of trials; the cognitive claims are a much thinner story built on smaller studies in sleep-deprived people.</p>
@@ -107,7 +107,7 @@
           <p class="item-note"><b>Rewritten last week.</b> Two new trials pulled the cognitive effect down. The strength section didn't change.</p>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="training">
           <div>
             <h3>Zone 2 training</h3>
             <p>Long, easy aerobic work at the top of fat oxidation. Solid evidence that it builds an aerobic base — the arguments are about where the zone sits for you, and every method of finding it disagrees with the others by a good ten beats.</p>
@@ -118,7 +118,29 @@
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="food training">
+          <div>
+            <h3>Protein, spread across the day</h3>
+            <p>The least controversial number in sports nutrition. Around 1.6 g per kg of bodyweight covers almost everyone training hard; past roughly 2.2 g/kg the extra does nothing measurable. Spreading it across meals beats banking it all into dinner.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">1.6 g/kg/day</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="training">
+          <div>
+            <h3>VO₂max intervals</h3>
+            <p>Hard intervals near maximal aerobic capacity, once a week on top of easy volume. VO₂max is one of the strongest single predictors of all-cause mortality in cohort data, and it responds to this faster than to anything else.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">1×/week, 4×4 min</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep">
           <div>
             <h3>Morning light exposure</h3>
             <p>Getting bright light into your eyes soon after waking to anchor the body clock. The mechanism is well understood; the field trials are small and often run on people whose sleep was already broken, so the size of the effect on a normal sleeper is unclear.</p>
@@ -129,7 +151,41 @@
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="sleep">
+          <div>
+            <h3>Sleep regularity</h3>
+            <p>Going to bed and waking at consistent times, weekends included. Recent cohort work suggests regularity predicts mortality at least as well as duration does — which, if it holds, makes it the cheapest sleep intervention there is. Observational so far.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag mixed">promising</span>
+            <span class="tag">same time ±30 min</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep">
+          <div>
+            <h3>Cutting caffeine before bed</h3>
+            <p>Caffeine's half-life runs five to six hours, so an afternoon coffee is still half-present at midnight. The lab data on sleep architecture is solid; how much it matters for you depends on genetics and tolerance, which is exactly what this month's group test is trying to pin down.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag mixed">promising</span>
+            <span class="tag">8 h before sleep</span>
+          </div>
+          <p class="item-note"><b>Being tested now.</b> 41 people are running the caffeine timing protocol — join in if you want to add a data point.</p>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep mind">
+          <div>
+            <h3>CBT for insomnia</h3>
+            <p>The first-line treatment for chronic insomnia in every major guideline, ahead of medication. Unglamorous, hard to sell, and it works better than anything else on this page for the specific problem of not being able to sleep.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">4–8 sessions</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="training">
           <div>
             <h3>Sauna after training</h3>
             <p>Regular heat exposure looks good for blood pressure and cardiovascular risk, mostly from one long Finnish cohort. That's observational data on a population that saunas for cultural reasons, which is a very different thing from a protocol.</p>
@@ -140,7 +196,40 @@
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="training">
+          <div>
+            <h3>Heat acclimation before a hot race</h3>
+            <p>Deliberate heat exposure in the weeks before a hot event: plasma volume rises, sweat starts earlier. Well supported in the lab, and the current group test is checking how much of it survives a normal working life.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">5–10 days, 60 min</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="training">
+          <div>
+            <h3>Cold plunge straight after lifting</h3>
+            <p>Feels great, and that's not nothing. But several trials suggest cold immersion right after resistance training blunts the adaptations you were training for. Move it away from the session, or skip it on lifting days.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">may work against you</span>
+            <span class="tag">3 min, 10–12 °C</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="food">
+          <div>
+            <h3>Fibre, and most people miss it</h3>
+            <p>One of the few dietary numbers with consistent evidence across cardiovascular disease, colorectal cancer and all-cause mortality. Most people in western countries eat about half of it. Cheaper and better supported than any supplement on this page.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">25–30 g/day</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep supplements rewritten">
           <div>
             <h3>Magnesium glycinate for sleep</h3>
             <p>Popular, cheap and mostly harmless. The trials are small and largely in older adults with low magnesium to begin with; if you eat well, there's little reason to expect much.</p>
@@ -152,7 +241,41 @@
           <p class="item-note"><b>Corrected.</b> @ana found the trial we'd missed — the effect is smaller than we first wrote.</p>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="supplements rewritten">
+          <div>
+            <h3>Vitamin D for cortisol</h3>
+            <p>A 15-person trial found a 40% drop in urinary cortisol after two weeks. Larger trials haven't replicated it, and the one signal that survives is that correcting a deficiency may normalise stress physiology — which is a much smaller claim than the viral version.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">barely studied</span>
+            <span class="tag">2,000 IU/day</span>
+          </div>
+          <p class="item-note"><b>New.</b> Written up in full on the newsletter, with the three trials side by side.</p>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="supplements">
+          <div>
+            <h3>Omega-3 (EPA and DHA)</h3>
+            <p>Reliable at lowering triglycerides. Much shakier on the thing people take it for — the large prevention trials have mostly disappointed, and dose, ratio and baseline fish intake all move the answer around.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag mixed">promising</span>
+            <span class="tag">1–2 g/day</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="supplements training">
+          <div>
+            <h3>Beta-alanine</h3>
+            <p>Genuinely works for efforts in the one-to-ten-minute range, which is a narrow but real window. The tingling is harmless and fades. Useless for a marathon, useless for a single heavy set.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">3–6 g/day</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="skin">
           <div>
             <h3>Topical retinoids</h3>
             <p>One of the few skincare ingredients with real trial data behind it, for both acne and photoaging. The catch is time and irritation: results take months, and most people quit in week three.</p>
@@ -163,7 +286,29 @@
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="skin">
+          <div>
+            <h3>Daily sunscreen</h3>
+            <p>The best evidenced anti-ageing intervention that exists, and the least discussed in biohacking circles. A randomised trial running over four years found measurably less skin ageing in the daily-use group.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag known">well studied</span>
+            <span class="tag">SPF 30+, daily</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="skin">
+          <div>
+            <h3>Niacinamide</h3>
+            <p>Well tolerated, cheap, and reasonable evidence for barrier function and pigmentation. The trials are mostly small and industry-run, so treat the size of the effect with more caution than the direction of it.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag mixed">promising</span>
+            <span class="tag">4–5%, twice daily</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="supplements mind">
           <div>
             <h3>Ashwagandha for stress</h3>
             <p>A handful of short trials report lower perceived stress, but they're small, often industry-funded, and rely on self-reported scales. Interesting, not settled — and there are real liver-injury case reports worth knowing about.</p>
@@ -174,30 +319,29 @@
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="mind">
           <div>
-            <h3>Cold plunge straight after lifting</h3>
-            <p>Feels great, and that's not nothing. But several trials suggest cold immersion right after resistance training blunts the adaptations you were training for. Move it away from the session, or skip it on lifting days.</p>
+            <h3>Mindfulness for stress</h3>
+            <p>Moderate evidence for anxiety and perceived stress, weaker for everything else it gets sold for. The trials are hard to blind and the control groups are usually doing nothing, which inflates the effect.</p>
           </div>
           <div class="item-side item-meta">
-            <span class="tag thin">may work against you</span>
-            <span class="tag">3 min, 10–12 °C</span>
+            <span class="tag mixed">promising</span>
+            <span class="tag">10–20 min/day</span>
           </div>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="mind">
           <div>
-            <h3>Heat acclimation before a hot race</h3>
-            <p>Deliberate heat exposure in the weeks before a hot event: plasma volume rises, sweat starts earlier. Well supported in the lab, and the current group test is checking how much of it survives a normal working life.</p>
+            <h3>Slow breathing to calm down fast</h3>
+            <p>Extending the exhale to slow the heart within a minute or two. The acute physiology is real and easy to measure on yourself; the claims about lasting effects on anxiety rest on very little.</p>
           </div>
           <div class="item-side item-meta">
-            <span class="tag known">well studied</span>
-            <span class="tag">5–10 days, 60 min</span>
+            <span class="tag thin">barely studied</span>
+            <span class="tag">5–10 breaths</span>
           </div>
-          <p class="item-note"><b>Being tested now.</b> 41 people are running this in the community — join in if you want to add a data point.</p>
         </a>
 
-        <a class="item" href="hacks.html">
+        <a class="item" href="hacks.html" data-cat="food training">
           <div>
             <h3>Carbs above 3,000 m</h3>
             <p>Appetite drops at altitude exactly when you need fuel most. The sports-nutrition guidance is decent at sea level and thin above it, so most of what's here comes from mountaineering practice and our own bad days out.</p>
@@ -208,7 +352,64 @@
           </div>
         </a>
 
+        <a class="item" href="hacks.html" data-cat="food">
+          <div>
+            <h3>Fasting windows, calories held equal</h3>
+            <p>When trials match calories between groups, time-restricted eating stops outperforming ordinary dieting for fat loss. It's a useful tool if the window helps you eat less — which for many people it does. It just isn't a metabolic trick.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">doesn't hold up</span>
+            <span class="tag">16:8</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="supplements">
+          <div>
+            <h3>Multivitamins for healthy adults</h3>
+            <p>Large, long randomised trials in well-fed populations keep coming back null for mortality and cardiovascular outcomes. Different story entirely if you have a specific deficiency, which is an argument for testing rather than for a daily tablet.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">doesn't hold up</span>
+            <span class="tag">daily</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="supplements">
+          <div>
+            <h3>NMN and NR for longevity</h3>
+            <p>NAD+ levels do rise. The human trials that measured anything a person would notice — strength, endurance, metabolic markers — have mostly found nothing. The mouse data is genuinely exciting and that's the whole problem.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">doesn't hold up</span>
+            <span class="tag">250–1,000 mg</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep">
+          <div>
+            <h3>Blue-light glasses in the evening</h3>
+            <p>The mechanism is real, but the trials on sleep onset and quality are largely null or tiny. What you're doing on the screen at 11pm appears to matter more than the wavelength coming off it.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">doesn't hold up</span>
+            <span class="tag">2 h before bed</span>
+          </div>
+        </a>
+
+        <a class="item" href="hacks.html" data-cat="sleep">
+          <div>
+            <h3>Alcohol as a sleep aid</h3>
+            <p>It shortens the time to fall asleep and wrecks the second half of the night — suppressed REM, more waking, worse next-day recovery. One of the clearest cases where the subjective feeling and the measurement point in opposite directions.</p>
+          </div>
+          <div class="item-side item-meta">
+            <span class="tag thin">doesn't hold up</span>
+            <span class="tag">any dose</span>
+          </div>
+        </a>
+
       </div>
+
+      <p class="no-hits" id="hack-empty" hidden style="font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);padding:26px 0">Nothing in that category yet. <a href="community.html" style="color:var(--blue);text-decoration:none">Ask for it in the Discord</a> — that's how the next one gets written.</p>
 
       <p class="aside-line">This is a sample of the shelf. The full index runs to 412 notes — <a href="community.html">the community</a> decides what gets written next.</p>
     </div>
@@ -298,6 +499,45 @@
   } catch (err) {
     /* la sección se queda oculta */
   }
+})();
+</script>
+
+<script>
+/* Los chips de arriba filtran la lista. Sin JS, la lista se ve entera. */
+(function () {
+  var bar = document.getElementById("hack-filters");
+  var list = document.getElementById("hack-list");
+  var empty = document.getElementById("hack-empty");
+  if (!bar || !list) return;
+
+  var chips = Array.prototype.slice.call(bar.querySelectorAll("[data-filter]"));
+  var items = Array.prototype.slice.call(list.querySelectorAll(".item"));
+
+  function apply(want) {
+    var shown = 0;
+    items.forEach(function (item) {
+      var cats = (item.dataset.cat || "").split(" ");
+      var show = want === "all" || cats.indexOf(want) !== -1;
+      item.hidden = !show;
+      if (show) shown++;
+    });
+    chips.forEach(function (c) {
+      var on = c.dataset.filter === want;
+      c.classList.toggle("is-on", on);
+      c.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    if (empty) empty.hidden = shown > 0;
+  }
+
+  chips.forEach(function (chip) {
+    chip.setAttribute("role", "button");
+    chip.addEventListener("click", function (e) {
+      e.preventDefault();
+      apply(chip.dataset.filter);
+    });
+  });
+
+  apply("all");
 })();
 </script>
 
