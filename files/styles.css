@@ -332,7 +332,17 @@ footer{border-top:1px solid var(--rule);padding:26px 0 46px}
 @media (max-width:960px){
   .hero-grid,.close-grid,.comm-grid,.page-head-in{grid-template-columns:1fr}
   .hero-grid,.page-head-in{align-items:start}
-  .masthead nav{display:none}
+  /* The nav used to be hidden here, which left the phone with no way
+     into the site at all. It drops to its own row and scrolls sideways. */
+  .masthead-in{flex-wrap:wrap;row-gap:10px;gap:12px}
+  .masthead .btn{margin-left:auto}
+  .masthead nav{
+    order:3;width:100%;margin-left:0;
+    overflow-x:auto;overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;
+  }
+  .masthead nav::-webkit-scrollbar{display:none}
+  .masthead nav a{flex:none}
 }
 @media (max-width:620px){
   .item{grid-template-columns:1fr}
