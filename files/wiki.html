@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wiki — hackers.bio</title>
+<meta name="description" content="Who takes what, where the claim comes from, what they sell, what they quietly stopped — and whether the evidence agrees with any of it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@1,6..72,300..400&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* ============================================================
+   Wiki — page-only styles. Everything else comes from styles.css
+   ============================================================ */
+
+/* ---------- the provenance meter ---------- */
+.meter{
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
+  padding:8px;display:grid;gap:2px;
+}
+.meter-row{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:baseline;padding:12px 14px}
+.meter-row b{font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.meter-row b span{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--ink-soft);letter-spacing:.04em;margin-left:7px}
+.meter-row b.p1{color:var(--blue)}
+.meter-row b.p2{color:var(--ochre)}
+.meter-row b.p3{color:var(--brick)}
+.meter-bar{display:flex;height:6px;border-radius:999px;background:var(--paper-2);overflow:hidden;margin:0 14px 6px}
+.meter-bar i{display:block;height:100%}
+.meter-bar i.p1{background:var(--blue)}
+.meter-bar i.p2{background:var(--ochre)}
+.meter-note{margin:0;padding:2px 14px 12px;font-family:var(--mono);font-size:11px;line-height:1.6;color:var(--ink-soft)}
+.meter-note b{color:var(--ink);font-weight:500}
+
+/* ---------- provenance pills: three tiers, never merged ---------- */
+.src{
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  font-family:var(--mono);font-size:10px;letter-spacing:.03em;
+  border-radius:999px;padding:3px 9px;text-decoration:none;
+  background:var(--blue-soft);color:var(--blue);border:1px solid transparent;
+  transition:.18s var(--ease);
+}
+.src:hover{border-color:currentColor}
+.src.sec{background:color-mix(in srgb,var(--ochre) 13%,var(--card));color:var(--ochre)}
+.src.no{
+  background:color-mix(in srgb,var(--brick) 10%,var(--card));
+  color:var(--brick);cursor:default;
+}
+
+/* ---------- where they converge ---------- */
+.top{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:t}
+.top li{
+  counter-increment:t;
+  display:grid;grid-template-columns:30px minmax(0,1.15fr) 128px minmax(0,1fr) auto;gap:18px;align-items:center;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r);
+  padding:16px 20px;transition:.2s var(--ease);
+}
+.top li:hover{border-color:color-mix(in srgb,var(--blue) 45%,var(--rule));transform:translateY(-2px)}
+.top li::before{content:"0" counter(t);font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.t-name{font-size:17px;font-weight:600;letter-spacing:-.028em}
+.t-name small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-soft);margin-top:3px}
+.t-dots{display:flex;align-items:center;gap:5px}
+.t-dots i{width:9px;height:9px;border-radius:50%;background:var(--rule);flex:none}
+.t-dots i.on{background:var(--blue)}
+.t-dots i.no{background:var(--ochre)}
+.t-dots b{font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-soft);margin-left:5px}
+.t-flag{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-align:right;color:var(--ink-soft);white-space:nowrap}
+.t-flag.warn{color:var(--brick)}
+.t-flag.good{color:var(--green)}
+.t-flag.split{color:var(--ochre)}
+
+/* ---------- search ---------- */
+.wiki-search{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+.wiki-search input{
+  flex:1 1 300px;font-family:var(--sans);font-size:14.5px;color:var(--ink);
+  background:var(--card);border:1px solid var(--rule);border-radius:999px;
+  padding:12px 20px;outline:none;transition:.18s var(--ease);
+}
+.wiki-search input:focus{border-color:var(--blue)}
+.wiki-search input::placeholder{color:var(--ink-soft)}
+.wiki-count{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft)}
+
+/* ---------- consensus table ---------- */
+.cons{display:grid;gap:8px}
+.cons-head{
+  display:grid;grid-template-columns:minmax(0,1.35fr) 150px minmax(0,1.1fr) 104px;gap:20px;
+  padding:0 20px 4px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-soft);
+}
+.cons-head span:last-child{text-align:right}
+
+.crow{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);transition:.2s var(--ease)}
+.crow[open]{border-color:color-mix(in srgb,var(--blue) 42%,var(--rule))}
+.crow summary{
+  display:grid;grid-template-columns:minmax(0,1.35fr) 150px minmax(0,1.1fr) 104px;gap:20px;
+  align-items:center;padding:16px 20px;cursor:pointer;list-style:none;
+}
+.crow summary::-webkit-details-marker{display:none}
+.crow summary:hover .c-name{color:var(--blue)}
+.c-name{font-size:16.5px;font-weight:600;letter-spacing:-.025em;transition:.2s var(--ease)}
+.c-name small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-soft);letter-spacing:0;margin-top:3px}
+.c-take{display:flex;align-items:baseline;gap:7px}
+.c-take b{font-size:20px;font-weight:600;letter-spacing:-.03em}
+.c-take b.zero{color:var(--rule)}
+.c-take > span{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);line-height:1.4}
+.c-take span.pend{color:var(--brick)}
+.c-take span.nope{color:var(--ochre)}
+.c-flag{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-align:right;color:var(--ink-soft)}
+.c-flag.warn{color:var(--brick)}
+.c-flag.good{color:var(--green)}
+.c-flag.split{color:var(--ochre)}
+
+.c-body{border-top:1px solid var(--rule);padding:18px 20px 20px;display:grid;gap:18px}
+.dims{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(148px,1fr))}
+.dim{background:var(--paper);border-radius:var(--r-sm);padding:11px 13px}
+.dim b{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:400}
+.dim p{margin:5px 0 0;font-size:13px;line-height:1.4;font-weight:500;letter-spacing:-.015em}
+.dim p.none{color:var(--ink-soft);font-weight:400}
+.who-takes{display:grid;gap:6px}
+.who-takes .wt{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;align-items:center;
+  padding:9px 12px;border-radius:var(--r-sm);background:var(--paper);
+}
+.who-takes .wt.unv{opacity:.62}
+.who-takes .wt.no{background:color-mix(in srgb,var(--ochre) 7%,var(--paper))}
+.wt-name{font-size:13.5px;font-weight:500;letter-spacing:-.015em}
+.wt-name em{font-family:var(--mono);font-style:normal;font-size:11px;color:var(--ink-soft);margin-left:8px;font-weight:400}
+.wt-name i{font-family:var(--mono);font-style:normal;font-size:10px;color:var(--ochre);margin-left:8px;letter-spacing:.04em}
+
+/* ---------- people ---------- */
+.people{display:grid;gap:10px}
+.person{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);transition:.2s var(--ease)}
+.person[open]{border-color:color-mix(in srgb,var(--blue) 42%,var(--rule))}
+.person summary{
+  display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:16px;align-items:center;
+  padding:18px 20px;cursor:pointer;list-style:none;
+}
+.person summary::-webkit-details-marker{display:none}
+.person summary:hover .p-name{color:var(--blue)}
+.p-face{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--mono);font-size:13px;font-weight:500;color:var(--card);background:var(--ink);
+}
+.p-name{font-size:19px;font-weight:600;letter-spacing:-.028em;transition:.2s var(--ease)}
+.p-role{margin:3px 0 0;font-size:13px;color:var(--ink-soft);line-height:1.45}
+.p-meta{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+
+.p-body{border-top:1px solid var(--rule);padding:20px;display:grid;gap:20px}
+.p-lede{margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:70ch}
+
+.coi{
+  border:1px solid color-mix(in srgb,var(--brick) 30%,var(--rule));
+  background:color-mix(in srgb,var(--brick) 5%,var(--card));
+  border-radius:var(--r-sm);padding:16px 18px;
+}
+.coi h4{
+  margin:0 0 4px;font-family:var(--mono);font-size:10px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--brick);font-weight:500;
+}
+.coi p.why{margin:0 0 12px;font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+.coi ul{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.coi li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:start}
+.coi b{font-size:13.5px;font-weight:600;letter-spacing:-.015em}
+.coi span{display:block;font-size:12.5px;color:var(--ink-soft);line-height:1.45;margin-top:2px}
+.coi .clash{
+  display:inline-block;margin-top:6px;font-family:var(--mono);font-size:10px;letter-spacing:.04em;
+  background:var(--brick);color:var(--card);border-radius:999px;padding:3px 9px;
+}
+
+.sub-h{
+  font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 10px;
+}
+.stack{display:grid;gap:6px}
+.srow{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) 108px auto;gap:8px 16px;align-items:center;
+  padding:11px 14px;border-radius:var(--r-sm);background:var(--paper);
+}
+.srow.unv{opacity:.6}
+.srow.gone{background:color-mix(in srgb,var(--ink) 4%,var(--paper))}
+.srow.no{background:color-mix(in srgb,var(--ochre) 8%,var(--paper))}
+.s-item{font-size:14px;font-weight:600;letter-spacing:-.02em}
+.s-item small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-soft);margin-top:3px;line-height:1.45}
+.s-dose{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);line-height:1.45}
+.s-dose span{opacity:.55}
+.s-when{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+
+/* ---------- graveyard ---------- */
+.grave{display:grid;gap:8px}
+.grow{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) auto;gap:10px 20px;align-items:start;
+  background:var(--card);border:1px solid var(--rule);border-radius:var(--r);padding:16px 20px;
+}
+.grow.unv{opacity:.62}
+.g-what{font-size:15.5px;font-weight:600;letter-spacing:-.025em}
+.g-what small{display:block;font-family:var(--mono);font-size:10.5px;font-weight:400;color:var(--ink-soft);margin-top:4px}
+.g-why{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+.g-why span{opacity:.6}
+
+.empty{
+  font-family:var(--mono);font-size:12px;color:var(--ink-soft);
+  background:var(--card);border:1px dashed var(--rule);border-radius:var(--r);padding:26px;text-align:center;
+}
+
+/* ---------- method ---------- */
+.method{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.no-list{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+.no-list li{font-size:13.5px;line-height:1.5;color:var(--ink-soft);padding-left:24px;position:relative}
+.no-list li::before{content:"×";position:absolute;left:6px;top:-1px;font-family:var(--mono);color:var(--brick);font-size:14px}
+.no-list b{color:var(--ink);font-weight:600}
+
+.tiers{display:grid;gap:10px;margin-top:16px}
+.tier{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start;
+  background:var(--paper);border-radius:var(--r-sm);padding:13px 15px}
+.tier p{margin:0;font-size:13px;line-height:1.5;color:var(--ink-soft)}
+.tier p b{color:var(--ink);font-weight:600}
+
+/* ---------- responsive ---------- */
+@media (max-width:860px){
+  .top li{grid-template-columns:26px minmax(0,1fr);gap:6px 14px;row-gap:12px}
+  .top li > span{grid-column:2}
+  .t-flag{text-align:left}
+  .cons-head{display:none}
+  .crow summary{grid-template-columns:minmax(0,1fr) auto;gap:10px 16px}
+  .c-take{grid-column:1;order:2}
+  .c-ev{grid-column:1 / -1;order:3}
+  .c-flag{text-align:left;grid-column:1 / -1;order:4}
+  .srow{grid-template-columns:minmax(0,1fr) auto;gap:6px 12px}
+  .s-dose{grid-column:1 / -1}
+  .grow{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .person summary{grid-template-columns:36px minmax(0,1fr);gap:12px}
+  .p-face{width:36px;height:36px;font-size:11.5px}
+  .p-meta{grid-column:1 / -1;justify-content:flex-start}
+  .tier{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap masthead-in">
+    <a class="mark" href="index.html">hackers<i>.</i>bio</a>
+    <nav>
+      <a href="hacks.html">Hacks</a>
+      <a class="is-active" href="wiki.html">Wiki</a>
+      <a href="community.html">Community</a>
+      <a href="library.html">Library</a>
+      <a href="app.html">App</a>
+      <a href="adventures.html">Adventures</a>
+    </nav>
+    <a class="btn" href="community.html">Join</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- ====== HEAD ====== -->
+  <section class="page-head">
+    <div class="wrap page-head-in">
+      <div class="rise">
+        <p class="eyebrow"><i class="dot"></i>06 — Wiki</p>
+        <h1>Who takes what, and <em class="s">whether it holds up</em>.</h1>
+        <p class="lede">A record of the protocols that public figures in longevity actually follow — with the receipt for every line, what each of them sells, what they quietly stopped taking, who publicly refuses it, and the evidence sitting next to the claim rather than three clicks away. Popularity is not evidence, so this page never lets the two share a column.</p>
+        <div class="page-actions">
+          <a class="btn" href="#consensus">See the consensus table</a>
+          <a class="btn btn-ghost" href="#method">How this is built</a>
+        </div>
+      </div>
+
+      <aside class="side-note rise d2">
+        <h3>How to read this page</h3>
+        <p>Four rules, and they are the whole point of it existing.</p>
+        <ul>
+          <li><b>Provenance has three tiers</b> — blue is linked and checkable, amber is pending, red has no located source at all.</li>
+          <li><b>The tiers never get added together</b>, because "we found it but couldn't read it" is not the same claim as "here it is".</li>
+          <li><b>Who sells what is stated first</b>, before their protocol, not in a footnote.</li>
+          <li><b>Refusals count too</b> — someone declining a compound is data the headcount hides.</li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ====== THE METER ====== -->
+  <section class="band tight">
+    <div class="wrap">
+      <div class="meter rise d2" id="meter">
+        <div class="meter-row">
+          <b id="m-people">—<span>people</span></b>
+          <b id="m-claims">—<span>claims</span></b>
+          <b class="p1" id="m-primary">—<span>primary source</span></b>
+          <b class="p2" id="m-second">—<span>pending</span></b>
+          <b class="p3" id="m-unv">—<span>no source</span></b>
+        </div>
+        <div class="meter-bar"><i class="p1" id="m-bar1"></i><i class="p2" id="m-bar2"></i></div>
+        <p class="meter-note" id="m-note">Loading the database…</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== WHERE THEY CONVERGE ====== -->
+  <section class="band tight" id="agreed">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">Where they converge</p>
+        <h2 class="h2">The short list <em class="s">almost all of them take</em>.</h2>
+        <p class="lede">Everything that at least half the people on this page list. Read the right-hand column before you read the left one: two of the most universal items here sit on evidence we'd describe as mixed, and one of the most popular has a working scientist on this same page publicly refusing it. Agreement among well-known people is a real signal — about them.</p>
+      </div>
+      <ol class="top" id="top"></ol>
+      <p class="aside-line">Every one of these opens in full further down, with doses, who takes it and who doesn't. <a href="#consensus">See all 50+ →</a></p>
+    </div>
+  </section>
+
+  <!-- ====== CONSENSUS ====== -->
+  <section class="band tight" id="consensus">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">The consensus table</p>
+        <h2 class="h2">What they agree on, <em class="s">and whether that means anything</em>.</h2>
+        <p class="lede">Two separate columns on purpose. The left one counts people. The right one reports evidence. Where they disagree loudly, the row says so — because "five well-known people take it" is a fact about five people, not about the molecule. Refusals show up in the same column as adoptions, which is where this table earns its keep.</p>
+      </div>
+
+      <div class="wiki-search">
+        <input type="search" id="q" placeholder="Search a substance, a person, a company…" aria-label="Search the wiki">
+        <span class="wiki-count" id="q-count"></span>
+      </div>
+
+      <div class="cons-head" aria-hidden="true">
+        <span>Substance</span>
+        <span>Who lists it</span>
+        <span>What the evidence says</span>
+        <span>Divergence</span>
+      </div>
+      <div class="cons" id="cons"></div>
+      <p class="aside-line">Evidence labels here match the ones in <a href="hacks.html">Hacks</a>, and link through to the full note when one exists.</p>
+    </div>
+  </section>
+
+  <!-- ====== PEOPLE ====== -->
+  <section class="band tight" id="people">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">The protocols</p>
+        <h2 class="h2">One person, <em class="s">one open file</em>.</h2>
+        <p class="lede">Commercial interests come first on every card, deliberately. Not because someone selling a supplement is lying, but because you cannot weigh a recommendation without knowing who profits from it. Where a person sells or advises on something that also appears in their own stack, the card says so out loud. The badge on each card counts how much of that protocol we have read at its source rather than taken on trust.</p>
+      </div>
+      <div class="people" id="people-list"></div>
+    </div>
+  </section>
+
+  <!-- ====== GRAVEYARD ====== -->
+  <section class="band tight" id="graveyard">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">The graveyard</p>
+        <h2 class="h2">What they took, <em class="s">and quietly stopped</em>.</h2>
+        <p class="lede">Every stack you read online is the survivor. The abandoned compounds get deleted from the page and the recommendation carries on as if nothing happened. Here they stay, with the date and the stated reason — it's the most informative section on the site and the rarest anywhere else.</p>
+      </div>
+      <div class="grave" id="grave"></div>
+    </div>
+  </section>
+
+  <!-- ====== METHOD ====== -->
+  <section class="band tight" id="method">
+    <div class="wrap">
+      <div class="band-head">
+        <p class="figtag">Method</p>
+        <h2 class="h2">Five questions, <em class="s">not one score</em>.</h2>
+        <p class="lede">A single number out of ten is the most seductive and least honest thing a page like this can do — it hides which part is weak. Every substance here is answered along five separate axes, and any of them is allowed to say "nobody has checked".</p>
+      </div>
+
+      <div class="method">
+        <div class="panel">
+          <span class="kicker">01</span>
+          <h3>Evidence</h3>
+          <p>How much has actually been tested, and did the trials agree with each other. Trials in humans, not mechanism in a dish.</p>
+        </div>
+        <div class="panel">
+          <span class="kicker">02</span>
+          <h3>Effect size</h3>
+          <p>In plain words. "Statistically significant" and "worth doing" are different sentences, and the gap between them is where most of this industry lives.</p>
+        </div>
+        <div class="panel">
+          <span class="kicker">03</span>
+          <h3>In whom</h3>
+          <p>Studied in whom, exactly. Deficient people, sick people, 22-year-old men, mice. A result rarely travels well outside the room it was measured in.</p>
+        </div>
+        <div class="panel">
+          <span class="kicker">04</span>
+          <h3>Risk</h3>
+          <p>What it costs when it goes wrong, and what happens over years rather than weeks — the part almost never measured in the trials people quote.</p>
+        </div>
+        <div class="panel">
+          <span class="kicker">05</span>
+          <h3>Freshness</h3>
+          <p>When we last read the literature on it. A page that never says this is asking you to trust an unknown quantity of drift.</p>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-top:12px">
+        <div class="panel" style="grid-column:1/-1">
+          <span class="kicker">Provenance</span>
+          <h3>Three tiers, kept apart on purpose.</h3>
+          <div class="tiers">
+            <div class="tier"><span class="src">source · example.com</span>
+              <p><b>Primary.</b> The person said it themselves, or a company announced it: their own site, their own post, a disclosure page, a press release. This is the only tier we treat as established.</p></div>
+            <div class="tier"><span class="src sec" title="Example. Real pending pills say which of the two applies.">pending · stated on air</span>
+              <p><b>Pending.</b> We have found where the original lives and it is not a page anyone can link a line to — it was said on a podcast, or the detailed version sits behind a membership on their own site. The figure is shown because hiding it helps nobody, but it is counted on its own line and never presented as established. Hover any pending pill and it tells you which of the two it is.</p></div>
+            <div class="tier"><span class="src no">unverified</span>
+              <p><b>Nothing.</b> Widely repeated, no receipt located. It stays on the page, greyed out and labelled, until someone finds one or proves it wrong.</p></div>
+          </div>
+        </div>
+
+        <div class="panel" style="grid-column:1/-1">
+          <span class="kicker">What this page refuses to do</span>
+          <h3>The four ways a wiki like this normally goes bad.</h3>
+          <ul class="no-list">
+            <li><b>Turn a headcount into evidence.</b> Adoption and proof get separate columns and are never averaged into one number.</li>
+            <li><b>Launder provenance.</b> A figure we have not read at its source is never displayed as though we had.</li>
+            <li><b>Hide the seller.</b> If someone sells, advises, or holds equity in what they recommend, it appears above their protocol — flagged when it overlaps their own stack.</li>
+            <li><b>Quietly delete the failures.</b> Dropped compounds move to the graveyard with a date. Nothing disappears.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="aside-line">Nothing on this page is a recommendation, and none of it is medical advice. It is a record of what other people say they do — which is a different thing from what you should.</p>
+    </div>
+  </section>
+
+  <!-- ====== CLOSE ====== -->
+  <section class="close">
+    <div class="wrap">
+      <div class="close-inner">
+        <div class="close-grid">
+          <h2>Every amber pill on this page <em class="s">is a job</em>.</h2>
+          <div>
+            <p>Amber means the answer is in an episode nobody has timestamped yet, or behind a membership one of us doesn't have. Red means we haven't found it at all. Both are to-do items, not decoration — and the amber ones are small: one episode, one minute mark, one dose. If you listen to these people already, you can close one tonight. Bring it to the Discord and it goes up with your name on it.</p>
+            <a class="btn" href="community.html">Help verify a claim →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <a class="mark" href="index.html">hackers<i>.</i>bio</a>
+    <p>Notes get updated when the evidence does. Nothing here is medical advice.</p>
+    <span class="spacer"></span>
+    <a href="hacks.html">Hacks</a>
+    <a href="wiki.html">Wiki</a>
+    <a href="community.html">Community</a>
+    <a href="library.html">Library</a>
+    <a href="app.html">App</a>
+    <a href="adventures.html">Adventures</a>
+    <a href="about.html">About</a>
+  </div>
+</footer>
+
+<script>
+/* ==================================================================
+   WIKI — the whole page is built from the data blocks below.
+   Edit the data, the page rebuilds itself: cards, consensus table,
+   graveyard and every counter. No HTML to touch.
+
+   PROVENANCE — every claim carries two source fields:
+     src : ""  → primary. Their own words, their own site, a press
+                 release, a disclosure page. Blue pill. Counted.
+     pend: ""  → pending. The original has been located but cannot be
+                 linked to a line: said on a podcast, or behind a
+                 membership. Values are "audio" or "members" — see
+                 PENDING below. Amber pill. Counted SEPARATELY.
+     neither   → red "unverified". Stays visible, counts for nothing.
+
+   The tiers are kept apart deliberately. Merging them is how a page
+   like this quietly turns "somebody says so" into "it is known".
+   ================================================================== */
+
+const LAST_UPDATED = "9 August 2026";
+
+/* Sources used repeatedly, named once. */
+const BP = "https://blueprint.bryanjohnson.com/pages/blueprint-protocol"; /* primary — his own published protocol */
+
+/* Why a claim is still pending. The primary source for these exists —
+   we have located it — but it is not a page you can link a line to.  */
+const PENDING = {
+  audio:   { label:"stated on air",  note:"Stated by them in a podcast or video rather than in writing. Verifying it means finding the episode and the timestamp, which is a job rather than a search." },
+  members: { label:"members-only",   note:"The detailed version sits behind a paywall or membership video on their own site. We have found where it lives; we have not been able to read it." }
+};
+
+/* ---- EVIDENCE ---------------------------------------------------
+   One entry per substance, keyed by the `key` used in the stacks.
+   label: known | mixed | thin | against        (same words as Hacks)
+   A substance with no entry here renders as "not reviewed yet" —
+   which is the honest state, not a gap to paper over.
+   `checked` is deliberately empty everywhere: none of these lines
+   comes from a literature review done on a dated day yet.
+------------------------------------------------------------------ */
+const EVIDENCE = {
+  rapamycin: {
+    name:"Rapamycin", label:"thin",
+    line:"Extends lifespan in mice repeatedly, across labs — one of the most robust findings in the field. No human longevity trial has ever been run.",
+    size:"Unknown in humans", pop:"Mice; transplant patients at far higher doses",
+    risk:"Real: immunosuppression, lipids, glucose, mouth sores", checked:"", href:""
+  },
+  metformin: {
+    name:"Metformin", label:"mixed",
+    line:"Decades of safety data in diabetes. The longevity claim rests on observational comparisons; the trial meant to settle it still has not run.",
+    size:"Unclear outside diabetes", pop:"People with type 2 diabetes",
+    risk:"Low, but may blunt training adaptations", checked:"", href:""
+  },
+  nmn: {
+    name:"NMN / NR", label:"thin",
+    line:"Raises NAD+ in blood reliably. That the raised number produces any outcome you would notice remains unshown in humans.",
+    size:"No demonstrated clinical effect", pop:"Small, short human trials, mostly biomarkers",
+    risk:"Nothing serious reported short-term", checked:"", href:""
+  },
+  resveratrol: {
+    name:"Resveratrol", label:"against",
+    line:"The compound that started the modern longevity boom, and the one whose human trials have most consistently found nothing.",
+    size:"Not detectable in humans", pop:"Multiple human trials, null results",
+    risk:"Low; poorly absorbed", checked:"", href:""
+  },
+  creatine: {
+    name:"Creatine monohydrate", label:"known",
+    line:"One of the very few supplements with a large, repeatedly replicated effect — on strength and power. The cognitive claims are a much younger and thinner literature.",
+    size:"Clear for strength; small and unsettled for cognition",
+    pop:"Hundreds of trials, mostly younger trained adults",
+    risk:"Very low; water weight is the usual complaint", checked:"", href:"hacks.html"
+  },
+  vitd: {
+    name:"Vitamin D3", label:"mixed",
+    line:"Correcting a real deficiency matters. Supplementing people who are already replete has repeatedly failed to deliver what the observational data promised.",
+    size:"Large if deficient, near zero if not", pop:"Very large trials, mostly replete older adults",
+    risk:"Low at normal doses", checked:"", href:""
+  },
+  omega3: {
+    name:"Omega-3 (EPA/DHA)", label:"mixed",
+    line:"Big cardiovascular trials disagree with each other, and the disagreement tracks dose and formulation more closely than it tracks the biology.",
+    size:"Small, and contested", pop:"Large cardiovascular trials",
+    risk:"Low; bleeding risk at high doses", checked:"", href:""
+  },
+  magnesium: {
+    name:"Magnesium", label:"mixed",
+    line:"Deficiency is genuinely common and worth fixing. The sleep and cognition claims attached to specific forms are a much smaller literature than the marketing implies.",
+    size:"Modest; larger if intake is low", pop:"Mixed; several small sleep trials",
+    risk:"Low; loose stools at high doses", checked:"", href:""
+  },
+  ashwagandha: {
+    name:"Ashwagandha", label:"mixed",
+    line:"Small trials fairly consistently show a stress and sleep effect. They are small, short, and mostly run by people with an interest in the answer.",
+    size:"Moderate in small trials", pop:"Small short trials, stressed adults",
+    risk:"Liver injury reported in rare cases", checked:"", href:""
+  },
+  glycine: {
+    name:"Glycine", label:"mixed",
+    line:"A handful of small sleep trials, plus a mechanistic story about body temperature. Cheap, and the evidence is thinner than its popularity.",
+    size:"Small", pop:"Small sleep trials", risk:"Low", checked:"", href:""
+  },
+  lithium: {
+    name:"Lithium (microdose)", label:"thin",
+    line:"The interest comes from population data on drinking water and from model organisms. Microdosing in healthy people is essentially unstudied.",
+    size:"Unknown", pop:"Ecological data; model organisms",
+    risk:"Narrow therapeutic window at clinical doses", checked:"", href:""
+  },
+  vitk2: {
+    name:"Vitamin K2", label:"thin",
+    line:"A plausible mechanism around calcium handling and a small number of trials, mostly in bone density rather than the cardiovascular outcomes it is sold for.",
+    size:"Small, mostly surrogate endpoints", pop:"Small trials, postmenopausal women",
+    risk:"Low; interacts with warfarin", checked:"", href:""
+  },
+  coq10: {
+    name:"CoQ10 / ubiquinol", label:"mixed",
+    line:"Best evidence is in heart failure and in people on statins. As a general longevity supplement in healthy adults, largely untested.",
+    size:"Small outside specific conditions", pop:"Heart failure; statin users",
+    risk:"Low", checked:"", href:""
+  },
+  spermidine: {
+    name:"Spermidine", label:"thin",
+    line:"Autophagy story in cells and animals, plus observational dietary data. Human supplement trials are few and small.",
+    size:"Unknown in humans", pop:"Model organisms; small human pilots",
+    risk:"Little known long-term", checked:"", href:""
+  },
+  berberine: {
+    name:"Berberine", label:"mixed",
+    line:"Genuinely lowers blood glucose and lipids in trials — which is also why treating it as a benign supplement rather than a drug is the wrong frame.",
+    size:"Moderate on glucose and lipids", pop:"Metabolic syndrome, type 2 diabetes",
+    risk:"GI effects; meaningful drug interactions", checked:"", href:""
+  },
+  statin: {
+    name:"Statin", label:"known",
+    line:"Among the best-evidenced drugs in medicine for cardiovascular risk. Included here because it sits in a stack, not because it is a supplement.",
+    size:"Large, on cardiovascular events", pop:"Very large trials across risk groups",
+    risk:"Muscle symptoms; monitored prescription drug", checked:"", href:""
+  },
+  aspirin: {
+    name:"Low-dose aspirin", label:"mixed",
+    line:"Long-standing in secondary prevention. In healthy older adults, trials found the bleeding harm cancelled the benefit — guidance moved away from routine use.",
+    size:"Net negative in healthy older adults", pop:"Large primary-prevention trials",
+    risk:"Bleeding, including intracranial", checked:"", href:""
+  },
+  fisetin: {
+    name:"Fisetin", label:"thin",
+    line:"A senolytic story built on mice. Human trials exist but are small and early, and results are not yet in hand.",
+    size:"Unknown in humans", pop:"Mice; early human trials",
+    risk:"Little known", checked:"", href:""
+  },
+  sulforaphane: {
+    name:"Sulforaphane", label:"mixed",
+    line:"Reliable effects on detoxification enzymes in humans. The distance from that biomarker to any outcome you would feel is where the argument lives.",
+    size:"Clear on biomarkers, unclear on outcomes", pop:"Small human trials",
+    risk:"Low", checked:"", href:""
+  },
+  akg: {
+    name:"Calcium alpha-ketoglutarate", label:"thin",
+    line:"Mouse lifespan data and one small uncontrolled human study of biological-age markers. Sold well ahead of its evidence.",
+    size:"Unknown in humans", pop:"Mice; small uncontrolled human study",
+    risk:"Little known long-term", checked:"", href:""
+  },
+  protein: {
+    name:"Protein intake (~1.6 g/kg)", label:"known",
+    line:"About as settled as nutrition gets: intakes around this level support muscle retention alongside training, with little added benefit past it.",
+    size:"Clear for muscle retention with training", pop:"Broad, including older adults",
+    risk:"Low in healthy kidneys", checked:"", href:""
+  },
+  fiber: {
+    name:"Dietary fibre (>40 g/day)", label:"known",
+    line:"One of the strongest and least glamorous findings in nutrition, and consistently the least discussed item in stacks of forty supplements.",
+    size:"Large, on cardiovascular and colorectal outcomes",
+    pop:"Very large cohorts and some trials", risk:"Very low", checked:"", href:""
+  },
+  lifting: {
+    name:"Resistance training", label:"known",
+    line:"The single best-evidenced intervention on this page, and the one every person listed here agrees on.",
+    size:"Large, on strength, mass, bone and mortality", pop:"Broad, including the very old",
+    risk:"Injury with bad technique or programming", checked:"", href:"hacks.html"
+  },
+  zone2: {
+    name:"Zone 2 training", label:"known",
+    line:"That aerobic base training improves cardiorespiratory fitness is not in doubt. That the specific zone matters more than total volume is a far weaker claim.",
+    size:"Large for fitness; the zone itself, unclear", pop:"Broad, decades of exercise physiology",
+    risk:"Very low", checked:"", href:"hacks.html"
+  },
+  sauna: {
+    name:"Sauna / heat exposure", label:"mixed",
+    line:"The striking numbers come from one long-running Finnish cohort. Observational, self-selected, and never yet replicated as a trial.",
+    size:"Large in the cohort, unverified by trial", pop:"Middle-aged Finnish men",
+    risk:"Low; caution in pregnancy and heart disease", checked:"", href:""
+  },
+  cold: {
+    name:"Cold exposure", label:"mixed",
+    line:"Reliable for how you feel. For recovery it may work against strength and hypertrophy if timed right after lifting.",
+    size:"Small, and sometimes negative", pop:"Small trials, trained young adults",
+    risk:"Low; cardiac caution", checked:"", href:"hacks.html"
+  },
+  tongkat: {
+    name:"Tongkat ali", label:"thin",
+    line:"Small trials on testosterone and stress markers, mostly short and industry-adjacent.",
+    size:"Small, uncertain", pop:"Small trials", risk:"Limited long-term data", checked:"", href:""
+  },
+  fadogia: {
+    name:"Fadogia agrestis", label:"thin",
+    line:"Rodent data only, including rodent toxicity signals at higher doses. Human data does not meaningfully exist.",
+    size:"Unknown in humans", pop:"Rodents",
+    risk:"Testicular toxicity in rodent studies", checked:"", href:""
+  },
+  ag1: {
+    name:"AG1 / greens powder", label:"thin",
+    line:"A multivitamin in powder form. Little outcome evidence for the blend itself, and the most heavily marketed product in this entire field.",
+    size:"No demonstrated outcome benefit", pop:"Essentially unstudied as a product",
+    risk:"Low", checked:"", href:""
+  }
+};
+
+/* ---- PEOPLE -----------------------------------------------------
+   status: "current" | "dropped"      (dropped entries build the graveyard)
+   rejects: things a person publicly declines to take — data the
+   headcount alone would hide, and the reason this page lists a critic.
+------------------------------------------------------------------ */
+const PEOPLE = [
+  {
+    id:"johnson", name:"Bryan Johnson",
+    role:"Founder, Blueprint · publishes his protocol and his blood work in full",
+    lede:"The most completely documented protocol in existence, and the one with the most direct commercial interest attached. Both facts are load-bearing. The transparency is real and genuinely unusual — the whole thing is published with doses and clock times. So is the fact that a large part of it is his own product line: several entries below are not compounds but Blueprint SKUs, and the individual ingredients other people list separately are bundled inside them.",
+    interests:[
+      { what:"Blueprint", detail:"Sells the supplement line the protocol is built from. Longevity Mix, Longevity Protein, Essential Capsules and Advanced Antioxidants are his own products, and they carry much of the stack inside them — the product and the recommendation are the same object.", src:BP, clash:"Named products run through his own protocol" }
+    ],
+    stack:[
+      { key:"rapamycin", item:"Rapamycin", dose:"~13 mg weekly, tapered over years", since:"c. 2019", why:"Mouse lifespan data", status:"dropped", until:"September 2024", whyStopped:"Concluded the side effects — intermittent skin infections, raised glucose, worse lipids, higher resting heart rate — did not justify lifelong dosing.", src:"https://blueprint.bryanjohnson.com/blogs/news/i-stopped-taking-rapamycin" },
+      { key:"creatine", item:"Creatine", dose:"5 g, 05:25 (7.5 g total with Longevity Mix)", status:"current", src:BP },
+      { key:"omega3", item:"Omega-3", dose:"800 mg EPA/DHA/DPA, after breakfast", status:"current", src:BP },
+      { key:"nmn", item:"NMN / NR", dose:"NMN 500 mg alternated with NR 450 mg, after breakfast", status:"current", src:BP },
+      { key:"metformin", item:"Metformin", dose:"500 mg, six-week on/off cycles", status:"current", src:BP },
+      { key:"sauna", item:"Dry sauna", dose:"20 min at 200 °F, daily", status:"current", src:BP },
+      { key:"evoo", item:"Extra-virgin olive oil", dose:"1 Tbsp at breakfast + 1 Tbsp mid-morning", status:"current", src:BP },
+      { key:"collagen", item:"Collagen peptides", dose:"11 g at breakfast + 1 scoop mid-morning", status:"current", src:BP },
+      { key:"ashwagandha", item:"Ashwagandha & rhodiola", dose:"1 capsule after breakfast", status:"current", src:BP },
+      { key:"protein", item:"Protein (Longevity + Metabolic Protein)", dose:"One serving each, breakfast and mid-morning", why:"Both are his own products", status:"current", src:BP },
+      { key:"fiber", item:"Prebiotic fibre", dose:"½ tsp GOS + 1 tsp inulin + 1 tsp arabinogalactan, 05:25", status:"current", src:BP },
+      { key:"redlight", item:"Red / near-infrared light", dose:"6 min daily, morning and evening", status:"current", src:BP },
+      { key:"hbot", item:"Hyperbaric oxygen", dose:"90 min at 2 ATM, 5 sessions weekly", status:"current", src:BP },
+      { key:"acarbose", item:"Acarbose", dose:"200 mg daily (prescription)", status:"current", src:BP },
+      { key:"jardiance", item:"Empagliflozin (Jardiance)", dose:"10 mg daily (prescription)", status:"current", src:BP },
+      { key:"repatha", item:"Evolocumab (Repatha)", dose:"140 mg every two weeks (prescription)", status:"current", src:BP },
+      { key:"candesartan", item:"Candesartan", dose:"8 mg daily (prescription)", status:"current", src:BP },
+      { key:"tadalafil", item:"Tadalafil", dose:"5 mg daily (prescription)", status:"current", src:BP },
+      { key:"thyroid", item:"Thyroid hormone", dose:"Armour Thyroid 60 mg + levothyroxine 100 mcg daily", status:"current", src:BP },
+      { key:"minoxidil", item:"Minoxidil", dose:"3.75 mg oral daily + 7% topical nightly", why:"Hair, not longevity", status:"current", src:BP }
+    ]
+  },
+
+  {
+    id:"attia", name:"Peter Attia",
+    role:"Physician · author of Outlive · host of The Drive",
+    lede:"Argues from risk and time horizon rather than from compounds, which makes his protocol harder to reduce to a list — and means a list of his supplements misrepresents him more than it does most people here. The exercise half of what he advocates is the part with the best evidence and the least merchandise attached.",
+    interests:[
+      { what:"AG1 (Athletic Greens)", detail:"Named a scientific advisor in August 2022, and reported as an investor in the company.", src:"https://www.businesswire.com/news/home/20220823005320/en/Athletic-Greens-Names-Dr.-Peter-Attia-as-Scientific-Advisor", clash:"AG1 also appears in his own stack" },
+      { what:"Early Medical · The Drive", detail:"A medical practice and a sponsor-funded podcast. Full disclosure list not yet transcribed onto this page.", src:"" }
+    ],
+    stack:[
+      { key:"omega3", item:"Omega-3 (EPA/DHA)", dose:"~2 g EPA + 1.5 g DHA, with meals", status:"current", pend:"members" },
+      { key:"vitd", item:"Vitamin D3", dose:"5,000 IU, morning with fat", status:"current", pend:"members" },
+      { key:"magnesium", item:"Magnesium", dose:"~400–500 mg elemental + L-threonate at night", status:"current", pend:"members" },
+      { key:"creatine", item:"Creatine monohydrate", dose:"5 g/day", status:"current", pend:"members" },
+      { key:"glycine", item:"Glycine", dose:"2–3 g before bed", status:"current", pend:"members" },
+      { key:"ashwagandha", item:"Ashwagandha", dose:"300–600 mg, evening", status:"current", pend:"members" },
+      { key:"curcumin", item:"Curcumin (Theracurmin)", dose:"~90 mg, 1–2×/day", status:"current", pend:"members" },
+      { key:"bvit", item:"Methylated B vitamins", dose:"Methylfolate + methyl-B12 daily; B6 ~50 mg 3×/week", status:"current", pend:"members" },
+      { key:"ag1", item:"AG1 (greens powder)", dose:"1 scoop, morning", why:"He is also an advisor to the company", status:"current", pend:"members" },
+      { key:"rapamycin", item:"Rapamycin", dose:"~6–8 mg weekly, off-label, cycled", status:"current", pend:"members" },
+      { key:"akkermansia", item:"Akkermansia probiotic", dose:"1 capsule/day", status:"current", pend:"members" },
+      { key:"zone2", item:"Zone 2 training", dose:"", status:"current", src:"", sec:"" },
+      { key:"lifting", item:"Resistance training", dose:"", status:"current", src:"", sec:"" },
+      { key:"metformin", item:"Metformin", dose:"~500–1,000 mg/day, historically", status:"dropped", until:"", whyStopped:"Stopped taking it himself; reported as a change of position rather than a side-effect problem.", pend:"members" },
+      { key:"resveratrol", item:"Resveratrol", dose:"", status:"dropped", until:"", whyStopped:"Publicly dismissive of it — listed as rejected rather than tapered.", pend:"members" }
+    ]
+  },
+
+  {
+    id:"huberman", name:"Andrew Huberman",
+    role:"Neuroscientist, Stanford · host of Huberman Lab",
+    lede:"The largest audience of anyone here, and a protocol communicated mostly through a podcast funded by supplement and hardware sponsors. That structure is worth stating plainly rather than treating as background noise — it is the clearest case on this page of the distribution channel and the product being the same pipe.",
+    interests:[
+      { what:"Huberman Lab sponsors", detail:"Eighteen named sponsors, including AG1, Eight Sleep, LMNT, WHOOP, Function Health and Helix. The page states they only work with brands whose products they personally use.", src:"https://www.hubermanlab.com/sponsors", clash:"Sponsor categories overlap his own stack" },
+      { what:"AG1 (Athletic Greens)", detail:"Announced as a scientific advisor in March 2022.", src:"https://www.businesswire.com/news/home/20220318005080/en/Athletic-Greens-Announces-Dr.-Andrew-Huberman-as-Scientific-Advisor" },
+      { what:"Eight Sleep", detail:"Joined the company's scientific advisory board.", src:"https://www.eightsleep.com/blog/welcoming-new-scientific-advisory-board/" }
+    ],
+    stack:[
+      { key:"omega3", item:"Omega-3 (EPA-rich)", dose:"1–2 g EPA daily", status:"current", pend:"audio" },
+      { key:"vitd", item:"Vitamin D3", dose:"~5,000 IU daily", status:"current", pend:"audio" },
+      { key:"creatine", item:"Creatine monohydrate", dose:"5 g/day, up to ~10 g", status:"current", pend:"audio" },
+      { key:"magnesium", item:"Magnesium L-threonate", dose:"~145 mg elemental", status:"current", pend:"audio" },
+      { key:"theanine", item:"L-theanine", dose:"100–400 mg", status:"current", pend:"audio" },
+      { key:"apigenin", item:"Apigenin", dose:"50 mg", status:"current", pend:"audio" },
+      { key:"glycine", item:"Glycine", dose:"2 g", status:"current", pend:"audio" },
+      { key:"myoinositol", item:"Myo-inositol", dose:"900 mg", status:"current", pend:"audio" },
+      { key:"alphagpc", item:"Alpha-GPC", dose:"300–600 mg", status:"current", pend:"audio" },
+      { key:"tyrosine", item:"L-tyrosine", dose:"~500 mg, up to ~1 g", status:"current", pend:"audio" },
+      { key:"rhodiola", item:"Rhodiola rosea", dose:"100–200 mg", status:"current", pend:"audio" },
+      { key:"ashwagandha", item:"Ashwagandha (KSM-66)", dose:"~600 mg", status:"current", pend:"audio" },
+      { key:"nmn", item:"NMN", dose:"1–2 g", status:"current", pend:"audio" },
+      { key:"cold", item:"Cold exposure", dose:"", status:"current", src:"", sec:"" },
+      { key:"sauna", item:"Sauna", dose:"", status:"current", src:"", sec:"" },
+      { key:"tongkat", item:"Tongkat ali", dose:"400 mg", status:"dropped", until:"", whyStopped:"Paused after beginning medically supervised testosterone-supporting therapy.", pend:"audio" },
+      { key:"fadogia", item:"Fadogia agrestis", dose:"400–600 mg", status:"dropped", until:"", whyStopped:"Paused alongside tongkat ali, for the same stated reason.", pend:"audio" }
+    ]
+  },
+
+  {
+    id:"patrick", name:"Rhonda Patrick",
+    role:"Biochemist · FoundMyFitness",
+    lede:"Closer to the primary literature than anyone else here, and the most willing to move a position when a paper lands. The recurring criticism is the distance travelled from a mechanism to a recommendation — the stack below is long for someone who describes the approach as food-first.",
+    interests:[
+      { what:"FoundMyFitness", detail:"Membership product and affiliate arrangements. Not yet transcribed onto this page.", src:"" }
+    ],
+    stack:[
+      { key:"omega3", item:"Omega-3 (EPA+DHA)", dose:"~2 g/day with meals", status:"current", pend:"members" },
+      { key:"vitd", item:"Vitamin D3", dose:"4,000–6,000 IU, evening with fat", status:"current", pend:"members" },
+      { key:"vitk2", item:"Vitamin K2 (MK-7)", dose:"~100 mcg, evening", status:"current", pend:"members" },
+      { key:"magnesium", item:"Magnesium glycinate", dose:"~120–130 mg elemental, before bed", status:"current", pend:"members" },
+      { key:"sulforaphane", item:"Sulforaphane (broccoli sprout extract)", dose:"~2 tablets with breakfast", status:"current", pend:"members" },
+      { key:"ala", item:"Alpha-lipoic acid", dose:"600 mg with breakfast", status:"current", pend:"members" },
+      { key:"coq10", item:"Ubiquinol (CoQ10)", dose:"100 mg, up to ~300 mg", status:"current", pend:"members" },
+      { key:"melatonin", item:"Melatonin", dose:"~3 mg (or 0.3–1 mg) before bed", status:"current", pend:"members" },
+      { key:"myoinositol", item:"Myo-inositol", dose:"2 g, evening", status:"current", pend:"members" },
+      { key:"creatine", item:"Creatine monohydrate", dose:"5 g/day, increasing toward ~10 g", status:"current", pend:"members" },
+      { key:"collagen", item:"Collagen peptides / glycine", dose:"~10–20 g, morning", status:"current", pend:"members" },
+      { key:"multivit", item:"Multivitamin", dose:"1 capsule/day with food", status:"current", pend:"members" },
+      { key:"lutein", item:"Lutein / zeaxanthin", dose:"~10 mg + 2 mg with food", status:"current", pend:"members" },
+      { key:"pqq", item:"PQQ", dose:"20 mg/day, afternoon", status:"current", pend:"members" },
+      { key:"cocoa", item:"Cocoa flavanols", dose:"~500–750 mg/day", status:"current", pend:"members" },
+      { key:"curcumin", item:"Curcumin (phytosome)", dose:"~1 g/day, evening", status:"current", pend:"members" },
+      { key:"sauna", item:"Sauna", dose:"", why:"Her best-known research topic", status:"current", src:"", sec:"" }
+    ]
+  },
+
+  {
+    id:"sinclair", name:"David Sinclair",
+    role:"Geneticist, Harvard Medical School",
+    lede:"The most cited and the most contested figure in the field. His laboratory work and his public claims are frequently treated as one thing; several of his own colleagues have argued at length that they should not be. His stack is also the only one here containing two prescription drugs taken for longevity rather than for a diagnosis.",
+    record:[
+      { what:"Stepped down as president of the Academy for Health and Lifespan Research, March 2024", detail:"Followed sustained criticism from other aging researchers over a press release from Animal Bioscience, a company he co-founded, describing a dog supplement in terms of reversing aging. The wording was later revised.", src:"https://longevity.technology/news/david-sinclair-resigns-as-president-of-the-academy-for-health-lifespan-research/" }
+    ],
+    interests:[
+      { what:"Animal Bioscience", detail:"Co-founder. The company at the centre of the 2024 dispute above.", src:"https://longevity.technology/news/david-sinclair-resigns-as-president-of-the-academy-for-health-lifespan-research/" },
+      { what:"Sirtris / GSK", detail:"The resveratrol programme acquired by GSK and later wound down.", pend:"audio" },
+      { what:"Other company positions", detail:"Founder, advisory and equity positions across several longevity companies. Not yet transcribed onto this page.", src:"" }
+    ],
+    stack:[
+      { key:"nmn", item:"NMN", dose:"1 g, morning", status:"current", pend:"audio" },
+      { key:"resveratrol", item:"Resveratrol", dose:"1 g with fat, morning", status:"current", pend:"audio" },
+      { key:"fisetin", item:"Fisetin", dose:"500 mg daily", status:"current", pend:"audio" },
+      { key:"spermidine", item:"Spermidine", dose:"1–2 mg daily", status:"current", pend:"audio" },
+      { key:"berberine", item:"Berberine", dose:"1 g daily, skipped on training days", status:"current", pend:"audio" },
+      { key:"nattokinase", item:"Nattokinase", dose:"~2,000 FU daily", status:"current", pend:"audio" },
+      { key:"ala", item:"Alpha-lipoic acid", dose:"~500 mg daily", status:"current", pend:"audio" },
+      { key:"omega3", item:"Fish oil (omega-3)", dose:"Dose not stated", status:"current", pend:"audio" },
+      { key:"coq10", item:"CoQ10", dose:"Dose not stated", status:"current", pend:"audio" },
+      { key:"aspirin", item:"Low-dose aspirin", dose:"81 mg daily", status:"current", pend:"audio" },
+      { key:"vitd", item:"Vitamin D3", dose:"With fat, morning", status:"current", pend:"audio" },
+      { key:"vitk2", item:"Vitamin K2", dose:"Morning", status:"current", pend:"audio" },
+      { key:"statin", item:"Statin", dose:"80 mg daily, since age 29", status:"current", pend:"audio" },
+      { key:"rapamycin", item:"Rapamycin", dose:"~4× per year, intermittent", status:"current", pend:"audio" },
+      { key:"metformin", item:"Metformin", dose:"Occasional", why:"Largely replaced by berberine", status:"current", pend:"audio" }
+    ]
+  },
+
+  {
+    id:"kaeberlein", name:"Matt Kaeberlein",
+    role:"Biogerontologist · Dog Aging Project · Optispan",
+    lede:"Here as a control. He works on the same molecules as everyone above and is publicly, specifically critical of most of the consumer claims made about them — including several made by people listed on this page. A wiki that collects only enthusiasts measures enthusiasm. His refusals below are as informative as anyone else's stack.",
+    interests:[
+      { what:"Rejuvant", detail:"Advisory board position with the manufacturer of the Ca-AKG product; disclosed publicly.", pend:"audio", clash:"Ca-AKG also appears in his own stack" },
+      { what:"Optispan", detail:"Company position. Not yet transcribed onto this page.", src:"" }
+    ],
+    rejects:[
+      { key:"nmn", item:"NMN and other NAD boosters", why:"Does not take them; publicly critical of the consumer claims.", pend:"audio" },
+      { key:"resveratrol", item:"Resveratrol", why:"Does not take it.", pend:"audio" },
+      { key:"metformin", item:"Metformin", why:"Does not take it, and argues against it for healthy non-diabetics.", pend:"audio" }
+    ],
+    stack:[
+      { key:"rapamycin", item:"Rapamycin", dose:"6–8 mg once weekly, cycled", status:"current", pend:"audio" },
+      { key:"creatine", item:"Creatine monohydrate", dose:"5 g/day", status:"current", pend:"audio" },
+      { key:"protein", item:"Protein intake", dose:"~1.6 g/kg/day across meals", status:"current", pend:"audio" },
+      { key:"omega3", item:"Omega-3 (EPA/DHA)", dose:"~1–2 g/day with food", status:"current", pend:"audio" },
+      { key:"vitd", item:"Vitamin D3", dose:"~1,000–2,000 IU, titrated to blood level", status:"current", pend:"audio" },
+      { key:"magnesium", item:"Magnesium", dose:"~300–400 mg/day, often evening", status:"current", pend:"audio" },
+      { key:"fiber", item:"Dietary fibre", dose:">40 g/day across meals", status:"current", pend:"audio" },
+      { key:"lithium", item:"Lithium orotate (low dose)", dose:"~1–5 mg elemental", status:"current", pend:"audio" },
+      { key:"akg", item:"Calcium alpha-ketoglutarate", dose:"~1,000 mg/day", why:"He advises the manufacturer", status:"current", pend:"audio" },
+      { key:"bvit", item:"B12 + methylfolate", dose:"For a confirmed MTHFR variant", status:"current", pend:"audio" },
+      { key:"lifting", item:"Resistance training", dose:"", status:"current", src:"", sec:"" }
+    ]
+  }
+];
+
+/* ================================================================== */
+
+const LABEL_TEXT = {
+  known:"well studied", mixed:"promising, mixed",
+  thin:"barely studied in humans", against:"doesn't hold up"
+};
+
+const esc = s => String(s == null ? "" : s)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+const initials = n => n.split(/\s+/).map(w => w[0]).join("").slice(0,2).toUpperCase();
+
+function host(url){
+  try { return new URL(url).hostname.replace(/^www\./,""); } catch(e){ return "source"; }
+}
+
+/* The three tiers. Never merged, never silently promoted. */
+function pill(c){
+  if (c && c.src)
+    return '<a class="src" href="' + esc(c.src) + '" target="_blank" rel="noopener">source · ' + esc(host(c.src)) + '</a>';
+  if (c && c.pend){
+    const p = PENDING[c.pend] || { label:"gated", note:"Primary source located but not readable as text." };
+    return '<span class="src sec" title="' + esc(p.note) + '">pending · ' + esc(p.label) + '</span>';
+  }
+  return '<span class="src no" title="No source located yet — counted separately from everything else">unverified</span>';
+}
+
+const tierOf = c => (c && c.src) ? 1 : (c && c.pend) ? 2 : 3;
+
+function evTag(key){
+  const e = EVIDENCE[key];
+  if (!e) return '<span class="tag">not reviewed yet</span>';
+  return '<span class="tag ' + e.label + '">' + esc(LABEL_TEXT[e.label] || e.label) + '</span>';
+}
+
+function nameOf(key, fallback){
+  return (EVIDENCE[key] && EVIDENCE[key].name) || fallback || key;
+}
+
+/* ---------- totals ---------- */
+function totals(){
+  const t = { people:PEOPLE.length, claims:0, primary:0, second:0, unv:0, grave:0, coi:0 };
+  const bump = c => { t.claims++; const k = tierOf(c); if (k===1) t.primary++; else if (k===2) t.second++; else t.unv++; };
+  PEOPLE.forEach(p => {
+    (p.stack || []).forEach(s => { bump(s); if (s.status === "dropped") t.grave++; });
+    (p.interests || []).forEach(i => { bump(i); t.coi++; });
+    (p.record || []).forEach(r => bump(r));
+    (p.rejects || []).forEach(r => bump(r));
+  });
+  return t;
+}
+
+function renderMeter(){
+  const t = totals();
+  const pc = n => t.claims ? Math.round(n / t.claims * 100) : 0;
+  const set = (id, v) => { document.getElementById(id).firstChild.nodeValue = v; };
+
+  set("m-people", t.people); set("m-claims", t.claims);
+  set("m-primary", t.primary); set("m-second", t.second); set("m-unv", t.unv);
+  document.getElementById("m-bar1").style.width = pc(t.primary) + "%";
+  document.getElementById("m-bar2").style.width = pc(t.second) + "%";
+
+  document.getElementById("m-note").innerHTML =
+    "<b>" + pc(t.primary) + "% of this page is primary-sourced</b> — the person's own words, their own site, or a company announcement, " +
+    "linked so you can go and check it. " +
+    "Another <b>" + pc(t.second) + "% is pending</b>: we know where the original is and it is not a page you can link a line to — " +
+    "it was said on a podcast, or it sits behind a membership on their own site. Those claims are shown, coloured differently, " +
+    "and counted on their own line rather than added to the first number. " +
+    t.unv + " claims have no located source at all. " +
+    "The job of this page is to move claims leftward, and it prints the score so you can see whether we are. " +
+    "Last edited " + esc(LAST_UPDATED) + ".";
+}
+
+/* ---------- consensus ---------- */
+function buildConsensus(){
+  const map = new Map();
+  const put = (key, obj) => { if (!map.has(key)) map.set(key, { takes:[], rejects:[] }); return map.get(key); };
+
+  PEOPLE.forEach(p => {
+    (p.stack || []).forEach(s => {
+      if (s.status === "dropped") return;
+      put(s.key).takes.push({ person:p, entry:s });
+    });
+    (p.rejects || []).forEach(r => put(r.key).rejects.push({ person:p, entry:r }));
+  });
+
+  return [...map.entries()].map(([key, v]) => ({
+    key, ...v,
+    n: v.takes.length,
+    primary: v.takes.filter(r => tierOf(r.entry) === 1).length,
+    second:  v.takes.filter(r => tierOf(r.entry) === 2).length,
+    unv:     v.takes.filter(r => tierOf(r.entry) === 3).length
+  })).sort((a,b) =>
+    b.n - a.n || b.rejects.length - a.rejects.length ||
+    nameOf(a.key).localeCompare(nameOf(b.key))
+  );
+}
+
+/* the whole reason the table has two columns */
+function divergence(c){
+  const e = EVIDENCE[c.key];
+  if (c.rejects.length && c.n) return { cls:"split", text:"contested here" };
+  if (!e) return { cls:"", text:"—" };
+  if (c.n >= 3 && (e.label === "thin" || e.label === "against")) return { cls:"warn", text:"popular ≠ proven" };
+  if (c.n >= 3 && e.label === "known") return { cls:"good", text:"agreement holds" };
+  if (c.n >= 3 && e.label === "mixed") return { cls:"split", text:"ahead of the evidence" };
+  if (c.n <= 2 && e.label === "known") return { cls:"", text:"good evidence, few takers" };
+  if (e.label === "against") return { cls:"warn", text:"evidence says no" };
+  return { cls:"", text:"—" };
+}
+
+function dim(label, value){
+  return '<div class="dim"><b>' + esc(label) + '</b><p' + (value ? '' : ' class="none"') + '>' +
+    (value ? esc(value) : 'not reviewed yet') + '</p></div>';
+}
+
+/* ---------- where they converge: everything half of them or more list ---------- */
+function renderTop(){
+  const rows = buildConsensus().filter(c => c.n >= Math.ceil(PEOPLE.length / 2));
+
+  document.getElementById("top").innerHTML = rows.map(c => {
+    const e = EVIDENCE[c.key];
+    const d = divergence(c);
+
+    /* one dot per person: blue lists it, amber refuses it, grey silent */
+    const dots = PEOPLE.map(p => {
+      if (c.takes.some(r => r.person.id === p.id))   return '<i class="on" title="' + esc(p.name) + ' lists it"></i>';
+      if (c.rejects.some(r => r.person.id === p.id)) return '<i class="no" title="' + esc(p.name) + ' declines it"></i>';
+      return '<i title="' + esc(p.name) + ' — not listed"></i>';
+    }).join("");
+
+    return '<li>' +
+      '<span class="t-name">' + esc(nameOf(c.key, c.takes[0].entry.item)) +
+        (c.rejects.length ? '<small>' + c.rejects.length + ' of them publicly refuses it</small>' : '') + '</span>' +
+      '<span class="t-dots">' + dots + '<b>' + c.n + '/' + PEOPLE.length + '</b></span>' +
+      '<span>' + evTag(c.key) + '</span>' +
+      '<span class="t-flag ' + d.cls + '">' + esc(d.text) + '</span>' +
+    '</li>';
+  }).join("");
+}
+
+function renderConsensus(){
+  document.getElementById("cons").innerHTML = buildConsensus().map(c => {
+    const e = EVIDENCE[c.key];
+    const d = divergence(c);
+    const label = nameOf(c.key, (c.takes[0] || c.rejects[0]).entry.item);
+    const search = (label + " " + c.key + " " +
+      c.takes.concat(c.rejects).map(r => r.person.name + " " + r.entry.item).join(" ") +
+      " " + (e ? e.line : "")).toLowerCase();
+
+    const line = (r, isNo) =>
+      '<div class="wt' + (isNo ? ' no' : (tierOf(r.entry) === 3 ? ' unv' : '')) + '">' +
+        '<span class="wt-name">' + esc(r.person.name) +
+          (isNo ? '<i>declines</i>' : (r.entry.dose ? '<em>' + esc(r.entry.dose) + '</em>' : '')) + '</span>' +
+        pill(r.entry) +
+      '</div>';
+
+    const sub = [];
+    if (c.primary) sub.push(c.primary + " primary");
+    if (c.second)  sub.push(c.second + " pending");
+    if (c.unv)     sub.push('<span class="pend">' + c.unv + " unsourced</span>");
+    if (c.rejects.length) sub.push('<span class="nope">' + c.rejects.length + " decline</span>");
+
+    return '' +
+    '<details class="crow" data-search="' + esc(search) + '">' +
+      '<summary>' +
+        '<span class="c-name">' + esc(label) +
+          (e && e.href ? '<small>read the full note in Hacks →</small>' : '') + '</span>' +
+        '<span class="c-take"><b' + (c.n ? '' : ' class="zero"') + '>' + (c.n || "—") + '</b>' +
+          '<span>of ' + PEOPLE.length + '<br>' + sub.join(" · ") + '</span></span>' +
+        '<span class="c-ev">' + evTag(c.key) + '</span>' +
+        '<span class="c-flag ' + d.cls + '">' + esc(d.text) + '</span>' +
+      '</summary>' +
+      '<div class="c-body">' +
+        (e ? '<p class="p-lede">' + esc(e.line) + '</p>'
+           : '<p class="p-lede" style="color:var(--ink-soft)">No evidence note written for this one yet. It appears here because someone lists it, which is not the same as it being worth taking.</p>') +
+        '<div class="dims">' +
+          dim("Evidence",    e ? LABEL_TEXT[e.label] : "") +
+          dim("Effect size", e ? e.size : "") +
+          dim("Studied in",  e ? e.pop  : "") +
+          dim("Risk",        e ? e.risk : "") +
+          dim("Last read",   e ? e.checked : "") +
+        '</div>' +
+        (c.takes.length ? '<div><p class="sub-h">Lists it — ' + c.takes.length + ' of ' + PEOPLE.length + '</p>' +
+          '<div class="who-takes">' + c.takes.map(r => line(r, false)).join("") + '</div></div>' : '') +
+        (c.rejects.length ? '<div><p class="sub-h">Publicly declines it — ' + c.rejects.length + '</p>' +
+          '<div class="who-takes">' + c.rejects.map(r => line(r, true)).join("") + '</div></div>' : '') +
+        (e && e.href ? '<p class="aside-line" style="margin:0"><a href="' + esc(e.href) + '">Open the evidence note →</a></p>' : '') +
+      '</div>' +
+    '</details>';
+  }).join("");
+}
+
+/* ---------- people ---------- */
+function renderPeople(){
+  document.getElementById("people-list").innerHTML = PEOPLE.map((p, i) => {
+    const all = p.stack || [];
+    const current = all.filter(s => s.status !== "dropped");
+    const dropped = all.filter(s => s.status === "dropped");
+    const primary = all.filter(s => tierOf(s) === 1).length;
+    const search = (p.name + " " + p.role + " " + (p.lede || "") + " " +
+      all.map(s => s.item).join(" ") + " " +
+      (p.rejects || []).map(r => r.item).join(" ") + " " +
+      (p.interests || []).map(x => x.what + " " + x.detail).join(" ")).toLowerCase();
+
+    const rows = list => list.map(s =>
+      '<div class="srow' + (tierOf(s) === 3 ? ' unv' : '') + (s.status === "dropped" ? ' gone' : '') + '">' +
+        '<span class="s-item">' + esc(s.item) + (s.why ? '<small>' + esc(s.why) + '</small>' : '') + '</span>' +
+        '<span class="s-dose">' + (s.dose ? esc(s.dose) : '<span>dose not recorded</span>') + '</span>' +
+        '<span class="s-when">' + esc(s.status === "dropped" ? (s.until ? "until " + s.until : "stopped") : (s.since || "")) + '</span>' +
+        pill(s) +
+      '</div>').join("");
+
+    const interests = (p.interests || []).map(x =>
+      '<li><div><b>' + esc(x.what) + '</b><span>' + esc(x.detail) + '</span>' +
+        (x.clash ? '<span class="clash">' + esc(x.clash) + '</span>' : '') +
+      '</div>' + pill(x) + '</li>').join("");
+
+    const block = (title, inner) => '<div><p class="sub-h">' + title + '</p><div class="stack">' + inner + '</div></div>';
+
+    const record = (p.record || []).length ? block("On the record",
+      p.record.map(r =>
+        '<div class="srow' + (tierOf(r) === 3 ? ' unv' : '') + '" style="grid-template-columns:minmax(0,1fr) auto">' +
+          '<span class="s-item">' + esc(r.what) + '<small>' + esc(r.detail) + '</small></span>' + pill(r) +
+        '</div>').join("")) : "";
+
+    const rejects = (p.rejects || []).length ? block("Publicly declines — " + p.rejects.length,
+      p.rejects.map(r =>
+        '<div class="srow no' + (tierOf(r) === 3 ? ' unv' : '') + '" style="grid-template-columns:minmax(0,1fr) auto">' +
+          '<span class="s-item">' + esc(r.item) + '<small>' + esc(r.why) + '</small></span>' + pill(r) +
+        '</div>').join("")) : "";
+
+    return '' +
+    '<details class="person" data-search="' + esc(search) + '"' + (i === 0 ? ' open' : '') + '>' +
+      '<summary>' +
+        '<span class="p-face" aria-hidden="true">' + esc(initials(p.name)) + '</span>' +
+        '<span><span class="p-name">' + esc(p.name) + '</span><span class="p-role">' + esc(p.role) + '</span></span>' +
+        '<span class="p-meta">' +
+          '<span class="tag">' + current.length + ' current</span>' +
+          (dropped.length ? '<span class="tag">' + dropped.length + ' dropped</span>' : '') +
+          ((p.rejects || []).length ? '<span class="tag mixed">' + p.rejects.length + ' declined</span>' : '') +
+          '<span class="tag ' + (primary ? 'known' : 'thin') + '">' + primary + '/' + all.length + ' primary</span>' +
+        '</span>' +
+      '</summary>' +
+      '<div class="p-body">' +
+        (p.lede ? '<p class="p-lede">' + esc(p.lede) + '</p>' : '') +
+        '<div class="coi"><h4>Commercial interests</h4>' +
+          '<p class="why">Stated before the protocol, not after it. Selling something is not the same as being wrong — it is context you need in order to weigh the rest.</p>' +
+          '<ul>' + interests + '</ul></div>' +
+        record +
+        block("Currently listed — " + current.length, rows(current)) +
+        rejects +
+        (dropped.length ? block("Stopped — " + dropped.length, rows(dropped)) : "") +
+      '</div>' +
+    '</details>';
+  }).join("");
+}
+
+/* ---------- graveyard ---------- */
+function renderGrave(){
+  const box = document.getElementById("grave");
+  const items = [];
+  PEOPLE.forEach(p => (p.stack || []).forEach(s => {
+    if (s.status === "dropped") items.push({ p, s });
+  }));
+
+  if (!items.length){ box.innerHTML = '<p class="empty">Nothing recorded here yet.</p>'; return; }
+  items.sort((a,b) => tierOf(a.s) - tierOf(b.s));
+
+  box.innerHTML = items.map(({p,s}) =>
+    '<div class="grow' + (tierOf(s) === 3 ? ' unv' : '') + '" data-search="' +
+        esc((p.name + " " + s.item + " " + (s.whyStopped || "")).toLowerCase()) + '">' +
+      '<span class="g-what">' + esc(s.item) +
+        '<small>' + esc(p.name) + (s.until ? ' · stopped ' + esc(s.until) : ' · date not recorded') + '</small></span>' +
+      '<p class="g-why">' + (s.whyStopped ? esc(s.whyStopped) : '<span>Reason not recorded yet.</span>') + '</p>' +
+      pill(s) +
+    '</div>').join("");
+}
+
+/* ---------- search ---------- */
+function wireSearch(){
+  const input = document.getElementById("q");
+  const count = document.getElementById("q-count");
+
+  const apply = () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0, total = 0;
+
+    document.querySelectorAll("[data-search]").forEach(el => {
+      const hit = !q || el.dataset.search.includes(q);
+      el.hidden = !hit;
+      if (el.classList.contains("crow")){ total++; if (hit) shown++; }
+    });
+
+    count.textContent = q
+      ? shown + " of " + total + " substances match"
+      : total + " substances · " + PEOPLE.length + " people · updated " + LAST_UPDATED;
+  };
+
+  input.addEventListener("input", apply);
+  apply();
+}
+
+renderMeter();
+renderTop();
+renderConsensus();
+renderPeople();
+renderGrave();
+wireSearch();
+</script>
+
+</body>
+</html>
