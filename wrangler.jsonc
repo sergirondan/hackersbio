@@ -1,0 +1,10 @@
+{
+  "name": "hackersbio",
+  "compatibility_date": "2026-08-01",
+  "main": "worker.js",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"]
+  }
+}
