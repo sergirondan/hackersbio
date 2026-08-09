@@ -53,14 +53,14 @@
     </div>
   </section>
 
-  <!-- ====== LATEST FROM SUBSTACK (filled in by /api/substack) ====== -->
+  <!-- ====== ULTIMO EN SUBSTACK (lo rellena el script del final) ====== -->
   <section class="band tight" id="latest" hidden>
     <div class="wrap">
       <div class="band-head">
         <p class="figtag">From the newsletter</p>
         <h2 class="h2">The latest, <em class="s">at more length</em>.</h2>
       </div>
-      <div class="rooms" id="latest-grid"></div>
+      <div class="rooms" id="latest-grid" style="grid-template-columns:repeat(auto-fill,minmax(268px,1fr))"></div>
       <p class="aside-line">Longer arguments go out on Substack first, then get folded back into the notes below. <a id="latest-archive" href="https://hackersbio.substack.com" target="_blank" rel="noopener">Read the archive →</a></p>
     </div>
   </section>
@@ -230,8 +230,9 @@
 </footer>
 
 <script>
-/* Fills the "From the newsletter" section from /api/substack.
-   If the feed is unreachable the section stays hidden. */
+/* Rellena la sección "From the newsletter" pidiendo los posts a
+   /api/substack (el worker.js de Cloudflare). Si algo falla, la
+   sección se queda oculta y la página funciona igual. */
 (async function () {
   var section = document.getElementById("latest");
   var grid = document.getElementById("latest-grid");
@@ -249,12 +250,12 @@
       card.target = "_blank";
       card.rel = "noopener";
 
-      if (post.date) {
-        var when = new Date(post.date);
+      var when = new Date(post.date);
+      if (post.date && !isNaN(when)) {
         var stamp = document.createElement("span");
         stamp.className = "room-n";
         stamp.style.alignSelf = "flex-start";
-        stamp.textContent = isNaN(when) ? post.date : when.toLocaleDateString("en-GB", {
+        stamp.textContent = when.toLocaleDateString("en-GB", {
           day: "numeric", month: "short", year: "numeric"
         });
         card.appendChild(stamp);
@@ -280,7 +281,7 @@
 
     section.hidden = false;
   } catch (err) {
-    /* leave the section hidden */
+    /* la sección se queda oculta */
   }
 })();
 </script>

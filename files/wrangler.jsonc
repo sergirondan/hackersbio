@@ -1,9 +1,11 @@
 {
+  // Las páginas del sitio viven en la carpeta files/
+  // worker.js y este archivo se quedan fuera, en la raíz.
   "name": "hackersbio",
   "compatibility_date": "2026-08-01",
   "main": "worker.js",
   "assets": {
-    "directory": ".",
+    "directory": "./files",
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   }
