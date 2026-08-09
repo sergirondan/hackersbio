@@ -29,7 +29,11 @@ async function feed() {
   const store = caches.default;
 
   try {
-    const res = await fetch(FEED, {
+    // "?cb=" cambia cada 30 min: obliga a Cloudflare a pedirlo de nuevo
+    // en vez de devolver un 429 que se quedo guardado hace horas.
+    const fresh = FEED + "?cb=" + Math.floor(Date.now() / 1800000);
+
+    const res = await fetch(fresh, {
       headers: {
         // Substack answers 429 to requests that don't look like a browser
         "user-agent":
@@ -61,6 +65,7 @@ async function feed() {
     if (items.length) await store.put(BACKUP, out.clone());
     return out;
   } catch (err) {
+    let planB = "no intentado";
     // Plan B: Substack a veces bloquea a Cloudflare. Este servicio
     // lee el feed por su cuenta y nos lo pasa ya masticado.
     try {
@@ -81,13 +86,21 @@ async function feed() {
         await store.put(BACKUP, out.clone());
         return out;
       }
-    } catch (e) { /* tambien ha fallado: seguimos abajo */ }
+      planB = "respondio " + alt.status + " / status=" + body.status;
+    } catch (e) {
+      planB = String((e && e.message) || e);
+    }
 
     // Ultima copia buena guardada, para no dejar la seccion vacia.
     const kept = await store.match(BACKUP);
     if (kept) return kept;
     // Nothing kept yet: the page hides the section rather than break.
-    return json({ items: [], error: String((err && err.message) || err) });
+    return json({
+      items: [],
+      version: "v4",
+      directo: String((err && err.message) || err),
+      planB: planB,
+    });
   }
 }
 
