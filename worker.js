@@ -21,13 +21,29 @@ export default {
   },
 };
 
+// Where the last good answer is kept, so a bad day at Substack
+// doesn't empty the section on the page.
+const BACKUP = new Request("https://hackers.bio/__substack-backup");
+
 async function feed() {
+  const store = caches.default;
+
   try {
     const res = await fetch(FEED, {
-      headers: { "user-agent": "hackers.bio (+https://hackers.bio)" },
-      // Cloudflare keeps the feed cached for 30 min, so Substack is hit
-      // roughly twice an hour no matter how many people visit the page.
-      cf: { cacheTtl: 1800, cacheEverything: true },
+      headers: {
+        // Substack answers 429 to requests that don't look like a browser
+        "user-agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+        accept: "application/rss+xml, application/xml;q=0.9, */*;q=0.8",
+        "accept-language": "en;q=0.9",
+      },
+      // Guarda 30 min SOLO las respuestas buenas. Los errores no se
+      // guardan, si no un 429 puntual se quedaba pegado media hora.
+      cf: {
+        cacheEverything: true,
+        cacheTtlByStatus: { "200-299": 1800, "300-399": 0, "400-599": 0 },
+      },
     });
     if (!res.ok) throw new Error("feed responded " + res.status);
 
@@ -41,10 +57,37 @@ async function feed() {
       summary: shorten(stripTags(text(pick(block, "description"))), SUMMARY_CHARS),
     })).filter((p) => p.title && p.link);
 
-    return json({ items });
+    const out = json({ items });
+    if (items.length) await store.put(BACKUP, out.clone());
+    return out;
   } catch (err) {
-    // The page hides the section rather than showing a broken one.
-    return json({ items: [], error: String(err && err.message || err) });
+    // Plan B: Substack a veces bloquea a Cloudflare. Este servicio
+    // lee el feed por su cuenta y nos lo pasa ya masticado.
+    try {
+      const alt = await fetch(
+        "https://api.rss2json.com/v1/api.json?count=" + HOW_MANY +
+        "&rss_url=" + encodeURIComponent(FEED),
+        { cf: { cacheEverything: true, cacheTtlByStatus: { "200-299": 1800, "400-599": 0 } } }
+      );
+      const body = await alt.json();
+      if (body.status === "ok" && body.items && body.items.length) {
+        const items = body.items.slice(0, HOW_MANY).map((p) => ({
+          title: p.title,
+          link: p.link,
+          date: p.pubDate,
+          summary: shorten(stripTags(p.description || p.content || ""), SUMMARY_CHARS),
+        }));
+        const out = json({ items });
+        await store.put(BACKUP, out.clone());
+        return out;
+      }
+    } catch (e) { /* tambien ha fallado: seguimos abajo */ }
+
+    // Ultima copia buena guardada, para no dejar la seccion vacia.
+    const kept = await store.match(BACKUP);
+    if (kept) return kept;
+    // Nothing kept yet: the page hides the section rather than break.
+    return json({ items: [], error: String((err && err.message) || err) });
   }
 }
 
