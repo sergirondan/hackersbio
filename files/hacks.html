@@ -409,7 +409,7 @@
 
       </div>
 
-      <p class="no-hits" id="hack-empty" hidden style="font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);padding:26px 0">Nothing in that category yet. <a href="community.html" style="color:var(--blue);text-decoration:none">Ask for it in the Discord</a> — that's how the next one gets written.</p>
+      <p class="no-hits" id="hack-empty" style="display:none;font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);padding:26px 0">Nothing in that category yet. <a href="community.html" style="color:var(--blue);text-decoration:none">Ask for it in the Discord</a> — that's how the next one gets written.</p>
 
       <p class="aside-line">This is a sample of the shelf. The full index runs to 412 notes — <a href="community.html">the community</a> decides what gets written next.</p>
     </div>
@@ -518,7 +518,9 @@
     items.forEach(function (item) {
       var cats = (item.dataset.cat || "").split(" ");
       var show = want === "all" || cats.indexOf(want) !== -1;
-      item.hidden = !show;
+      // .item lleva display:grid en styles.css, asi que el atributo
+      // "hidden" no lo oculta: hay que tocar el estilo directamente.
+      item.style.display = show ? "" : "none";
       if (show) shown++;
     });
     chips.forEach(function (c) {
@@ -526,7 +528,7 @@
       c.classList.toggle("is-on", on);
       c.setAttribute("aria-pressed", on ? "true" : "false");
     });
-    if (empty) empty.hidden = shown > 0;
+    if (empty) empty.style.display = shown > 0 ? "none" : "";
   }
 
   chips.forEach(function (chip) {
